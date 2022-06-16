@@ -160,6 +160,17 @@ command -v btm > /dev/null && alias top='btm $([ "$COLOR_SCHEME" = "light" ] && 
 command -v bashtop > /dev/null && alias top='bashtop'
 command -v bpytop > /dev/null && alias top='bpytop'
 
+### Docker command
+alias d='docker'
+alias dc='docker-compose'
+alias dcnt='docker container'
+alias dcur='docker container ls -f status=running -l -q'
+alias dexec='docker container exec -it $(dcur)'
+alias dimg='docker image'
+alias drun='docker container run --rm -d'
+alias drunit='docker container run --rm -it'
+alias dstop='docker container stop $(dcur)'
+
 # ------------------------------- ZSH PLUGINS ---------------------------------
 # ZSH Autosuggestions
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#999'

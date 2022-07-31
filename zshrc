@@ -121,6 +121,8 @@ alias xclip='xclip -selection c'
 alias cde='cd //workspaces/claudio_erp_plus'
 alias cdx='cd //workspaces/xymax-aries'
 alias cdxb='cd //workspaces/xymax-aries-batch'
+alias cdp='cd //workspaces/personal_work'
+
 command -v vim > /dev/null && alias vi='vim'
 
 ### Colorize commands

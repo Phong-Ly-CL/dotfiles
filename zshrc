@@ -166,6 +166,8 @@ command -v bpytop > /dev/null && alias top='bpytop'
 ### Docker command
 alias d='docker'
 alias dc='docker-compose'
+alias dcupf='docker-compose up frontend'
+alias dcupb='docker-compose up backend'
 alias dcnt='docker container'
 alias dcur='docker container ls -f status=running -l -q'
 alias dexec='docker container exec -it $(dcur)'

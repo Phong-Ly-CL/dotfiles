@@ -16,3 +16,4 @@
 	codev = checkout develop
 	cmm = commit -m
 	cma = commit --amend
+	pomr = pull origin main --rebase

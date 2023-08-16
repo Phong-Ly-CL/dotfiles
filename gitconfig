@@ -16,4 +16,5 @@
 	codev = checkout develop
 	cmm = commit -m
 	cma = commit --amend
-	pomr = pull origin main --rebase
+	stpu = stash push
+	stpo = stash pop

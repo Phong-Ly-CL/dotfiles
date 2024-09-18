@@ -227,7 +227,7 @@ ZSH_HIGHLIGHT_STYLES[cursor-matchingbracket]=standout
 DISABLE_AUTO_UPDATE=true
 DISABLE_UPDATE_PROMPT=true
 COLOR_SCHEME=dark # dark/light
-source ~/powerlevel10k/powerlevel10k.zsh-theme
+source ${ZSH_CUSTOM}/themes/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

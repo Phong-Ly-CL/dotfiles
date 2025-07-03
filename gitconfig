@@ -18,3 +18,5 @@
 	cma = commit --amend
 	stpu = stash push
 	stpo = stash pop
+[init]
+	defaultBranch = main

@@ -163,7 +163,7 @@ command -v btm > /dev/null && alias top='btm $([ "$COLOR_SCHEME" = "light" ] && 
 command -v bashtop > /dev/null && alias top='bashtop'
 command -v bpytop > /dev/null && alias top='bpytop'
 
-### Docker command
+### Docker commands
 alias d='docker'
 alias dc='docker-compose'
 alias dcupf='docker-compose up frontend'
@@ -175,6 +175,19 @@ alias dimg='docker image'
 alias drun='docker container run --rm -d'
 alias drunit='docker container run --rm -it'
 alias dstop='docker container stop $(dcur)'
+
+### Terraform commands
+alias tf='terraform'
+alias tfi='terraform init'
+alias tfp='terraform plan' 
+
+### TerraForm MOdule Explained
+function tfmoe {
+  echo -e "\nOutputs:"
+  grep -r "output \".*\"" $1 |awk '{print "\t",$2}' |tr -d '"'
+  echo -e "\nVariables:"
+  grep -r "variable \".*\"" $1 |awk '{print "\t",$2}' |tr -d '"'
+}
 
 # ------------------------------- ZSH PLUGINS ---------------------------------
 # ZSH Autosuggestions

@@ -256,3 +256,5 @@ export PATH="/home/linuxbrew/.linuxbrew/opt/openjdk@17/bin:$PATH"
 # Set .NET environment variables system-wide
 export DOTNET_ROOT=$HOME/.dotnet
 export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
+
+export PATH="$PATH:/opt/mssql-tools/bin"

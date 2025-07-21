@@ -258,3 +258,4 @@ export DOTNET_ROOT=$HOME/.dotnet
 export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
 
 export PATH="$PATH:/opt/mssql-tools/bin"
+export PATH="$PATH:$(go env GOPATH)/bin"

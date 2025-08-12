@@ -7,13 +7,13 @@ This script automatically sets up your Codespace to match your local PC developm
 For new Codespaces, run this single command:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/Phong-Ly-CL/auto_tenant_infra/main/claudeTools/setup-dotfiles.sh)
+bash <(curl -s https://raw.githubusercontent.com/Phong-Ly-CL/dotfiles/master/setup-dotfiles.sh)
 ```
 
 Or if you're already in this repository:
 
 ```bash
-./claudeTools/setup-dotfiles.sh
+./setup-dotfiles.sh
 ```
 
 ## What the Script Does
@@ -72,7 +72,7 @@ If you prefer to run the script locally:
 1. Download the script:
 
    ```bash
-   wget https://raw.githubusercontent.com/Phong-Ly-CL/auto_tenant_infra/main/claudeTools/setup-dotfiles.sh
+   wget https://raw.githubusercontent.com/Phong-Ly-CL/dotfiles/master/setup-dotfiles.sh
    ```
 
 2. Make it executable:

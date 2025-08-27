@@ -1,0 +1,54 @@
+# SSH Configuration Template
+# Copy this to ~/.ssh/config and customize as needed
+
+# Default settings for all hosts
+Host *
+    # Security settings
+    Protocol 2
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    HashKnownHosts yes
+    
+    # Connection settings
+    Compression yes
+    ControlMaster auto
+    ControlPath ~/.ssh/master-%r@%h:%p
+    ControlPersist 10m
+
+# Example configurations (uncomment and modify as needed)
+
+# GitHub
+# Host github.com
+#     HostName github.com
+#     User git
+#     IdentityFile ~/.ssh/id_ed25519_github
+#     AddKeysToAgent yes
+#     UseKeychain yes
+
+# Work server example
+# Host work-server
+#     HostName your-work-server.com
+#     User your-username
+#     Port 22
+#     IdentityFile ~/.ssh/id_rsa_work
+#     ForwardAgent yes
+
+# Development server example
+# Host dev
+#     HostName dev.example.com
+#     User developer
+#     Port 2222
+#     IdentityFile ~/.ssh/id_ed25519
+#     LocalForward 3000 localhost:3000
+
+# Jump host example
+# Host bastion
+#     HostName bastion.example.com
+#     User admin
+#     IdentityFile ~/.ssh/id_rsa_bastion
+#
+# Host internal-server
+#     HostName 10.0.0.100
+#     User app
+#     ProxyJump bastion
+#     IdentityFile ~/.ssh/id_rsa_internal

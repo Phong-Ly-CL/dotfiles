@@ -118,10 +118,10 @@ alias rm='rm -I'
 alias mv='mv -iv'
 alias ln='ln -sriv'
 alias xclip='xclip -selection c'
-alias cde='cd //workspaces/claudio_erp_plus'
-alias cdx='cd //workspaces/xymax-aries'
-alias cdxb='cd //workspaces/xymax-aries-batch'
-alias cdp='cd //workspaces/personal_work'
+# Environment-specific aliases (source from local config if exists)
+if [ -f ~/.zshrc.local ]; then
+    source ~/.zshrc.local
+fi
 
 command -v vim > /dev/null && alias vi='vim'
 

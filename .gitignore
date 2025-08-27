@@ -1,0 +1,49 @@
+# Dotfiles .gitignore
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.pid
+
+# Personal/sensitive files
+configs/ssh/config
+configs/git/local
+.env.local
+.env.personal
+
+# Cache directories
+**/cache/
+**/tmp/
+**/.cache/
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# Vim files
+configs/vim/undo/
+configs/vim/.netrwhist
+configs/nvim/undo/
+
+# OS specific
+.bash_history
+.zsh_history
+.python_history

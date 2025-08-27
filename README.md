@@ -1,94 +1,175 @@
-# Dotfiles Setup Script
+# Modern Dotfiles Setup
 
-This script automatically sets up your Codespace to match your local PC development environment using your dotfiles repository.
+A modern, organized dotfiles repository with symlink-based installation and environment-specific configurations.
 
-## Quick Setup
-
-For new Codespaces, run this single command:
+## ⚡ Quick Installation
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/Phong-Ly-CL/dotfiles/master/setup-dotfiles.sh)
+# Clone the repository
+git clone https://github.com/Phong-Ly-CL/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+
+# Install with symlinks
+./install.sh
+
+# Or use make
+make install
 ```
 
-Or if you're already in this repository:
+## 📁 Directory Structure
+
+```
+~/.dotfiles/
+├── configs/
+│   ├── environments/     # Environment-specific configs
+│   ├── git/             # Git configuration
+│   ├── ssh/             # SSH configuration templates
+│   ├── tmux/            # Tmux configuration
+│   ├── vim/             # Vim/Neovim configuration
+│   ├── gitconfig        # Main git config
+│   ├── p10k.zsh         # Powerlevel10k theme
+│   └── zshrc            # Main zsh configuration
+├── scripts/             # Installation and utility scripts
+├── templates/           # Configuration templates
+├── install.sh          # Main installation script
+├── Makefile            # Make targets for management
+└── README.md           # This file
+```
+
+## 🛠️ What's Included
+
+### Shell Configuration
+- **ZSH** with oh-my-zsh
+- **Powerlevel10k** theme
+- **Auto-suggestions** and **syntax highlighting**
+- **Environment-specific** configurations (Codespaces, WSL, macOS)
+
+### Development Tools
+- **Vim/Neovim** configuration with sensible defaults
+- **Tmux** configuration with vim-like navigation
+- **Git** configuration with useful aliases
+- **SSH** configuration template
+
+### Modern CLI Tools
+- `bat` for better `cat`
+- `lsd` for better `ls`
+- `htop` for better `top`
+
+## 🔧 Management Commands
 
 ```bash
-./setup-dotfiles.sh
+make help        # Show available commands
+make install     # Install dotfiles
+make uninstall   # Remove symlinks and restore backups
+make backup      # Create backup of current dotfiles
+make test        # Test configuration files
+make update      # Update from git and reinstall
+make clean       # Clean temporary files
 ```
 
-## What the Script Does
+## 🌍 Environment Detection
 
-✅ **System Updates**
+The dotfiles automatically detect your environment and load appropriate configurations:
 
-- Updates package lists
+- **GitHub Codespaces**: Workspace aliases and development settings
+- **WSL**: Windows integration and path settings  
+- **macOS**: Homebrew and macOS-specific tools
+- **Linux**: Generic Linux configuration
 
-✅ **Dotfiles Repository**
+## ⚙️ Customization
 
-- Clones your dotfiles from `https://github.com/Phong-Ly-CL/dotfiles.git`
-- Handles existing installations gracefully
+### Personal Configuration
+1. Copy the template: `cp templates/zshrc.local.template ~/.zshrc.local`
+2. Customize aliases and environment variables
+3. The template includes auto-detection for your environment
 
-✅ **Package Installation**
+### SSH Configuration
+1. Copy the template: `cp configs/ssh/config.template ~/.ssh/config`
+2. Add your servers and keys
+3. The template includes security best practices
 
-- Installs: `bat`, `lsd`, `htop`, `zsh`
-- Skips already installed packages
+## 🔄 Symlink-Based Installation
 
-✅ **Shell Configuration**
+Unlike traditional dotfiles that copy files, this setup uses symlinks:
 
-- Sets up oh-my-zsh (if not already present)
-- Installs zsh-autosuggestions plugin
-- Installs zsh-syntax-highlighting plugin
-- Installs Powerlevel10k theme
+- ✅ **Easy updates**: Changes sync automatically
+- ✅ **Version control**: All changes are tracked
+- ✅ **Backup safety**: Original files are backed up
+- ✅ **Clean uninstall**: Remove symlinks, restore originals
 
-✅ **Configuration Files**
+## 📦 Installed Packages
 
-- Copies `.gitconfig` with all your git aliases
-- Copies `.zshrc` with shell customizations
-- Copies `.p10k.zsh` for Powerlevel10k theme
+The installation script automatically installs:
+- `zsh` - Modern shell
+- `tmux` - Terminal multiplexer  
+- `vim` - Text editor
+- `bat` - Better cat with syntax highlighting
+- `lsd` - Better ls with colors and icons
+- `htop` - Better top with colors
 
-✅ **Verification**
+## 🚨 Safety Features
 
-- Tests all configurations
-- Reports any issues
+- **Automatic backup** of existing dotfiles
+- **Non-destructive** installation (preserves your current setup)
+- **Easy rollback** with uninstall script
+- **Gitignore** for sensitive files
 
-## After Installation
+## 🎯 Git Aliases
 
-1. **Start using zsh**: Run `zsh` to switch to your configured shell
-2. **Test git aliases**: Try `git st` (status) or `git lg` (fancy log)
-3. **Enjoy enhanced tools**: `ls` now uses `lsd`, `cat` uses `batcat`
+Included git aliases for productivity:
+- `git st` - status
+- `git co` - checkout
+- `git codev` - checkout develop
+- `git cmm` - commit with message
+- `git cma` - commit amend
+- `git lg` - beautiful log graph
+- `git stpu` - stash push
+- `git stpo` - stash pop
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
-The script includes comprehensive error handling and colored output:
+### ZSH not loading properly
+```bash
+# Test the configuration
+zsh -n ~/.zshrc
 
-- 🟢 **Green**: Successful operations
-- 🟡 **Yellow**: Warnings (non-critical)
-- 🔴 **Red**: Errors (will stop execution)
-- 🔵 **Blue**: Information messages
+# Source manually
+source ~/.zshrc
+```
 
-## Manual Installation
+### Tmux configuration issues
+```bash
+# Test tmux config
+tmux -f ~/.tmux.conf list-keys
 
-If you prefer to run the script locally:
+# Reload tmux config
+tmux source-file ~/.tmux.conf
+```
 
-1. Download the script:
+### Restore from backup
+```bash
+# Find your backup
+ls -la ~ | grep dotfiles-backup
 
-   ```bash
-   wget https://raw.githubusercontent.com/Phong-Ly-CL/dotfiles/master/setup-dotfiles.sh
-   ```
+# Run uninstall to restore
+./scripts/uninstall.sh
+```
 
-2. Make it executable:
+## 🤝 Contributing
 
-   ```bash
-   chmod +x setup-dotfiles.sh
-   ```
+1. Fork the repository
+2. Create your feature branch
+3. Make your changes
+4. Test with `make test`
+5. Submit a pull request
 
-3. Run it:
-   ```bash
-   ./setup-dotfiles.sh
-   ```
+## 📄 License
 
-## Notes
+This project is open source. Feel free to use and modify as needed.
 
-- The script is idempotent (safe to run multiple times)
-- Some warnings about missing Homebrew/Go are normal and expected
-- Default shell change requires admin privileges (not available in Codespaces)
-- All your custom aliases and configurations will be preserved
+---
+
+**Quick Start Summary:**
+```bash
+git clone https://github.com/Phong-Ly-CL/dotfiles.git ~/.dotfiles && ~/.dotfiles/install.sh
+```

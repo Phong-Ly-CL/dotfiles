@@ -1,0 +1,33 @@
+# Local ZSH configuration template
+# Copy this to ~/.zshrc.local and customize for your environment
+
+# Auto-detect and load environment-specific config
+if [[ -n "$CODESPACES" ]]; then
+    # GitHub Codespaces
+    source ~/.dotfiles/configs/environments/codespaces.zsh
+elif [[ -n "$WSL_DISTRO_NAME" ]] || [[ "$(uname -r)" == *microsoft* ]]; then
+    # Windows Subsystem for Linux
+    source ~/.dotfiles/configs/environments/wsl.zsh
+elif [[ "$(uname)" == "Darwin" ]]; then
+    # macOS
+    source ~/.dotfiles/configs/environments/macos.zsh
+else
+    # Generic Linux
+    echo "🐧 Linux environment detected"
+fi
+
+# Manual environment-specific aliases (uncomment and customize)
+# alias cde='cd /path/to/your/claudio_erp_plus'
+# alias cdx='cd /path/to/your/xymax-aries'
+# alias cdxb='cd /path/to/your/xymax-aries-batch'
+# alias cdp='cd /path/to/your/personal_work'
+
+# Custom environment variables
+# export CUSTOM_VAR="your_value"
+
+# Work-specific configurations
+# export WORK_PROJECT_DIR="/path/to/work/projects"
+# export API_BASE_URL="https://your-api.example.com"
+
+# Personal configurations
+# export PERSONAL_PROJECT_DIR="~/personal-projects"

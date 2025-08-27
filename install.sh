@@ -230,13 +230,42 @@ setup_zsh() {
             fi
         else
             info "✓ $plugin_name already installed"
-            # Verify plugin file exists
+            # Verify plugin files exist (different plugins use different naming)
+            local plugin_file_found=false
+            
+            # Check for common plugin file patterns
             if [ -f "$plugin_dir/${plugin_name}.plugin.zsh" ]; then
                 info "  Plugin file verified: ${plugin_name}.plugin.zsh"
-            else
-                warn "  Missing plugin file: ${plugin_name}.plugin.zsh"
+                plugin_file_found=true
+            elif [ -f "$plugin_dir/${plugin_name}.zsh" ]; then
+                info "  Plugin file verified: ${plugin_name}.zsh"
+                plugin_file_found=true
+            elif [ -f "$plugin_dir/$(basename $plugin_name).plugin.zsh" ]; then
+                info "  Plugin file verified: $(basename $plugin_name).plugin.zsh"
+                plugin_file_found=true
+            fi
+            
+            if [ "$plugin_file_found" = false ]; then
+                warn "  No standard plugin files found"
                 info "  Directory contents:"
                 ls -la "$plugin_dir" | head -5
+                
+                # For zsh-autosuggestions and zsh-syntax-highlighting, create plugin files if main files exist
+                if [ "$plugin_name" = "zsh-autosuggestions" ] && [ -f "$plugin_dir/zsh-autosuggestions.zsh" ]; then
+                    info "  Found main file: zsh-autosuggestions.zsh"
+                    if [ ! -f "$plugin_dir/zsh-autosuggestions.plugin.zsh" ]; then
+                        info "  Creating plugin wrapper file..."
+                        echo "source \"\${0:A:h}/zsh-autosuggestions.zsh\"" > "$plugin_dir/zsh-autosuggestions.plugin.zsh"
+                        info "  ✓ Created zsh-autosuggestions.plugin.zsh"
+                    fi
+                elif [ "$plugin_name" = "zsh-syntax-highlighting" ] && [ -f "$plugin_dir/zsh-syntax-highlighting.zsh" ]; then
+                    info "  Found main file: zsh-syntax-highlighting.zsh"
+                    if [ ! -f "$plugin_dir/zsh-syntax-highlighting.plugin.zsh" ]; then
+                        info "  Creating plugin wrapper file..."
+                        echo "source \"\${0:A:h}/zsh-syntax-highlighting.zsh\"" > "$plugin_dir/zsh-syntax-highlighting.plugin.zsh"
+                        info "  ✓ Created zsh-syntax-highlighting.plugin.zsh"
+                    fi
+                fi
             fi
         fi
     done

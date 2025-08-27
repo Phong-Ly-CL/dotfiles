@@ -195,6 +195,15 @@ setup_zsh() {
         export RUNZSH=no
         export CHSH=no
         sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || warn "Failed to install oh-my-zsh"
+    else
+        info "✓ oh-my-zsh already installed"
+    fi
+    
+    # Verify oh-my-zsh core files
+    if [ -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
+        info "✓ oh-my-zsh core file verified"
+    else
+        warn "✗ oh-my-zsh core file missing: $HOME/.oh-my-zsh/oh-my-zsh.sh"
     fi
     
     # Ensure custom directories exist
@@ -221,6 +230,14 @@ setup_zsh() {
             fi
         else
             info "✓ $plugin_name already installed"
+            # Verify plugin file exists
+            if [ -f "$plugin_dir/${plugin_name}.plugin.zsh" ]; then
+                info "  Plugin file verified: ${plugin_name}.plugin.zsh"
+            else
+                warn "  Missing plugin file: ${plugin_name}.plugin.zsh"
+                info "  Directory contents:"
+                ls -la "$plugin_dir" | head -5
+            fi
         fi
     done
     

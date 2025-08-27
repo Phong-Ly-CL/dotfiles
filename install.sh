@@ -49,9 +49,9 @@ backup_existing() {
 # Create symlinks
 create_symlinks() {
     local configs=(
-        "configs/zshrc:.zshrc"
-        "configs/gitconfig:.gitconfig" 
-        "configs/p10k.zsh:.p10k.zsh"
+        "configs/zsh/zshrc:.zshrc"
+        "configs/git/gitconfig:.gitconfig" 
+        "configs/zsh/p10k.zsh:.p10k.zsh"
         "configs/vim/vimrc:.vimrc"
         "configs/tmux/tmux.conf:.tmux.conf"
     )

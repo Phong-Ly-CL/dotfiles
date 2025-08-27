@@ -138,13 +138,19 @@ setup_zsh() {
     # Install oh-my-zsh if not present
     if [ ! -d "$HOME/.oh-my-zsh" ]; then
         info "Installing oh-my-zsh..."
-        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended || warn "Failed to install oh-my-zsh"
+        export RUNZSH=no
+        export CHSH=no
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || warn "Failed to install oh-my-zsh"
     fi
     
-    # Install plugins
+    # Ensure custom directories exist
+    mkdir -p "$HOME/.oh-my-zsh/custom/plugins"
+    mkdir -p "$HOME/.oh-my-zsh/custom/themes"
+    
+    # Install plugins with error handling
     local plugins=(
-        "zsh-autosuggestions:https://github.com/zsh-users/zsh-autosuggestions"
-        "zsh-syntax-highlighting:https://github.com/zsh-users/zsh-syntax-highlighting"
+        "zsh-autosuggestions:https://github.com/zsh-users/zsh-autosuggestions.git"
+        "zsh-syntax-highlighting:https://github.com/zsh-users/zsh-syntax-highlighting.git"
     )
     
     for plugin in "${plugins[@]}"; do
@@ -154,7 +160,13 @@ setup_zsh() {
         
         if [ ! -d "$plugin_dir" ]; then
             info "Installing $plugin_name..."
-            git clone "$plugin_repo" "$plugin_dir" || warn "Failed to install $plugin_name"
+            if git clone "$plugin_repo" "$plugin_dir"; then
+                info "✓ Successfully installed $plugin_name"
+            else
+                warn "✗ Failed to install $plugin_name"
+            fi
+        else
+            info "✓ $plugin_name already installed"
         fi
     done
     
@@ -162,7 +174,13 @@ setup_zsh() {
     local p10k_dir="$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
     if [ ! -d "$p10k_dir" ]; then
         info "Installing Powerlevel10k theme..."
-        git clone https://github.com/romkatv/powerlevel10k.git "$p10k_dir" || warn "Failed to install Powerlevel10k"
+        if git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$p10k_dir"; then
+            info "✓ Successfully installed Powerlevel10k"
+        else
+            warn "✗ Failed to install Powerlevel10k"
+        fi
+    else
+        info "✓ Powerlevel10k already installed"
     fi
 }
 

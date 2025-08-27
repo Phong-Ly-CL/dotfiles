@@ -90,7 +90,7 @@ source $ZSH/oh-my-zsh.sh
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#999'
 
 # Fix bash completion errors
-autoload -U +X bashcompinit && bashcompinit
+autoload -U +X bashcompinit && bashcompinit 2>/dev/null
 
 # ZSH Syntax Highlighting (configure after plugin is loaded)
 if [[ -n "${ZSH_HIGHLIGHT_STYLES}" ]]; then

@@ -92,6 +92,12 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#999'
 # Fix bash completion errors
 autoload -U +X bashcompinit && bashcompinit 2>/dev/null
 
+# Disable problematic bash completions
+if [[ -f /usr/share/bash-completion/completions/docker ]]; then
+    # Docker completion has syntax issues in ZSH, disable it
+    export FPATH="${FPATH/\/usr\/share\/bash-completion\/completions/}"
+fi
+
 # ZSH Syntax Highlighting (configure after plugin is loaded)
 if [[ -n "${ZSH_HIGHLIGHT_STYLES}" ]]; then
     ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)

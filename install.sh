@@ -4,7 +4,8 @@
 # Uses symlinks instead of copying for easier updates
 # Author: Phong Ly
 
-set -euo pipefail  # Exit on any error, undefined variables, or pipe failures
+# Temporarily disable strict mode for debugging
+set -eo pipefail  # Exit on error and pipe failures, but allow undefined variables
 
 # Error handler
 trap 'error_handler $? $LINENO' ERR
@@ -37,22 +38,38 @@ command_exists() { command -v "$1" >/dev/null 2>&1; }
 
 # Create backup of existing dotfiles
 backup_existing() {
+    info "Checking for existing dotfiles to backup..."
     local files=(".zshrc" ".gitconfig" ".p10k.zsh" ".vimrc" ".tmux.conf")
     local backed_up=false
     
+    # Debug: Show backup directory
+    info "Backup directory would be: $BACKUP_DIR"
+    
     for file in "${files[@]}"; do
+        info "Checking $HOME/$file..."
         if [ -f "$HOME/$file" ] && [ ! -L "$HOME/$file" ]; then
             if [ "$backed_up" = false ]; then
-                log "Creating backup directory: $BACKUP_DIR"
-                mkdir -p "$BACKUP_DIR"
+                info "Creating backup directory: $BACKUP_DIR"
+                if ! mkdir -p "$BACKUP_DIR"; then
+                    error "Failed to create backup directory: $BACKUP_DIR"
+                fi
                 backed_up=true
             fi
-            info "Backing up $file"
-            cp "$HOME/$file" "$BACKUP_DIR/"
+            info "Backing up $file..."
+            if ! cp "$HOME/$file" "$BACKUP_DIR/"; then
+                error "Failed to backup $file to $BACKUP_DIR"
+            fi
+            info "✓ Successfully backed up $file"
+        else
+            info "Skipping $file (not found or already symlinked)"
         fi
     done
     
-    [ "$backed_up" = true ] && info "Existing dotfiles backed up to $BACKUP_DIR"
+    if [ "$backed_up" = true ]; then
+        info "✓ Existing dotfiles backed up to $BACKUP_DIR"
+    else
+        info "✓ No files needed backup"
+    fi
 }
 
 # Create symlinks
@@ -266,6 +283,11 @@ verify_installation() {
 # Main installation function
 main() {
     log "Starting modern dotfiles installation..."
+    
+    # Debug: Show environment
+    info "Debug: HOME=$HOME"
+    info "Debug: DOTFILES_DIR=$DOTFILES_DIR"
+    info "Debug: BACKUP_DIR=$BACKUP_DIR"
     
     # Check if we're in the dotfiles directory
     if [ ! -f "$DOTFILES_DIR/install.sh" ]; then

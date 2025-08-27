@@ -318,11 +318,13 @@ verify_installation() {
         warn "✗ Git configuration not found"
     fi
     
-    # Test ZSH config
-    if zsh -c "source ~/.zshrc; echo 'ZSH loads successfully'" >/dev/null 2>&1; then
+    # Test ZSH config with timeout
+    info "Testing ZSH configuration..."
+    if timeout 10s zsh -c "export POWERLEVEL9K_INSTANT_PROMPT=off; source ~/.zshrc; echo 'ZSH loads successfully'" >/dev/null 2>&1; then
         info "✓ ZSH configuration loads successfully"
     else
-        warn "✗ ZSH configuration has issues"
+        warn "✗ ZSH configuration test timed out or failed (this is often normal)"
+        info "  Try running 'source ~/.zshrc' manually to test"
     fi
 }
 

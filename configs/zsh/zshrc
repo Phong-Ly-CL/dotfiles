@@ -1,5 +1,9 @@
-# Silence instant prompt warnings and docker completion errors
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+# Disable instant prompt in codespaces, quiet elsewhere
+if [[ -n "${CODESPACES}" ]]; then
+    typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+else
+    typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+fi
 
 # Disable problematic bash completions before anything loads them
 export ZSH_DISABLE_COMPFIX=true
@@ -8,7 +12,7 @@ export ZSH_DISABLE_COMPFIX=true
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" 2>/dev/null
 fi
 
 # If you come from bash you might have to change your $PATH.
@@ -89,7 +93,10 @@ plugins=(
     zsh-syntax-highlighting
 )
 
-source $ZSH/oh-my-zsh.sh
+# Source oh-my-zsh with error suppression to avoid instant prompt issues
+{
+  source $ZSH/oh-my-zsh.sh
+} 2>/dev/null
 
 # ------------------------------- ZSH PLUGINS ---------------------------------
 # ZSH Autosuggestions

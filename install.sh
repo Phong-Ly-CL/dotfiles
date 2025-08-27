@@ -4,7 +4,16 @@
 # Uses symlinks instead of copying for easier updates
 # Author: Phong Ly
 
-set -e  # Exit on any error
+set -euo pipefail  # Exit on any error, undefined variables, or pipe failures
+
+# Error handler
+trap 'error_handler $? $LINENO' ERR
+
+error_handler() {
+    local exit_code=$1
+    local line_number=$2
+    error "Script failed at line $line_number with exit code $exit_code"
+}
 
 # Colors for output
 RED='\033[0;31m'
@@ -102,31 +111,59 @@ setup_directories() {
 install_packages() {
     log "Installing required packages..."
     
-    # Update package list
+    # Determine package manager and packages
     if command_exists apt; then
-        sudo apt update || warn "Failed to update package list"
+        info "Using apt package manager..."
+        if command -v sudo >/dev/null 2>&1; then
+            info "Updating package list..."
+            if ! sudo apt update 2>/dev/null; then
+                warn "Failed to update package list (continuing anyway)"
+            fi
+        else
+            warn "No sudo access, skipping package update"
+        fi
         local packages=("bat" "lsd" "htop" "zsh" "tmux" "vim")
     elif command_exists yum; then
+        info "Using yum package manager..."
         local packages=("bat" "htop" "zsh" "tmux" "vim")
     elif command_exists brew; then
+        info "Using brew package manager..."
         local packages=("bat" "lsd" "htop" "zsh" "tmux" "vim")
     else
-        warn "No supported package manager found"
-        return
+        warn "No supported package manager found, skipping package installation"
+        return 0
     fi
     
     for package in "${packages[@]}"; do
         if ! command_exists "$package"; then
             info "Installing $package..."
+            local install_success=false
+            
             if command_exists apt; then
-                sudo apt install -y "$package" || warn "Failed to install $package"
+                if command -v sudo >/dev/null 2>&1; then
+                    if sudo apt install -y "$package" 2>/dev/null; then
+                        install_success=true
+                    fi
+                else
+                    warn "No sudo access, cannot install $package"
+                fi
             elif command_exists yum; then
-                sudo yum install -y "$package" || warn "Failed to install $package"
+                if sudo yum install -y "$package" 2>/dev/null; then
+                    install_success=true
+                fi
             elif command_exists brew; then
-                brew install "$package" || warn "Failed to install $package"
+                if brew install "$package" 2>/dev/null; then
+                    install_success=true
+                fi
+            fi
+            
+            if [ "$install_success" = true ]; then
+                info "✓ Successfully installed $package"
+            else
+                warn "✗ Failed to install $package (continuing anyway)"
             fi
         else
-            info "$package already installed"
+            info "✓ $package already installed"
         fi
     done
 }
@@ -235,12 +272,25 @@ main() {
         error "Please run this script from your dotfiles directory"
     fi
     
+    log "Step 1: Creating backups..."
     backup_existing
+    
+    log "Step 2: Installing packages..."
     install_packages
+    
+    log "Step 3: Setting up ZSH..."
     setup_zsh
+    
+    log "Step 4: Creating symlinks..."
     create_symlinks
+    
+    log "Step 5: Setting up directories..."
     setup_directories
+    
+    log "Step 6: Setting up templates..."
     setup_templates
+    
+    log "Step 7: Verifying installation..."
     verify_installation
     
     log "Installation completed successfully!"

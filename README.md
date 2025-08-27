@@ -22,13 +22,18 @@ make install
 ~/.dotfiles/
 ├── configs/
 │   ├── environments/     # Environment-specific configs
-│   ├── git/             # Git configuration
-│   ├── ssh/             # SSH configuration templates
-│   ├── tmux/            # Tmux configuration
-│   ├── vim/             # Vim/Neovim configuration
-│   ├── gitconfig        # Main git config
-│   ├── p10k.zsh         # Powerlevel10k theme
-│   └── zshrc            # Main zsh configuration
+│   ├── git/
+│   │   └── gitconfig    # Main git config
+│   ├── ssh/
+│   │   └── config.template  # SSH configuration template
+│   ├── tmux/
+│   │   └── tmux.conf    # Tmux configuration
+│   ├── vim/
+│   │   ├── init.vim     # Neovim configuration
+│   │   └── vimrc        # Vim configuration
+│   └── zsh/
+│       ├── p10k.zsh     # Powerlevel10k theme
+│       └── zshrc        # Main zsh configuration
 ├── scripts/             # Installation and utility scripts
 ├── templates/           # Configuration templates
 ├── install.sh          # Main installation script

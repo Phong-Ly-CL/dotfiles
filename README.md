@@ -144,12 +144,18 @@ source ~/.zshrc
 
 ### ZSH plugins not found
 ```bash
-# Install plugins manually if needed
+# For codespaces - force reinstall plugins
+rm -rf ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+rm -rf ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 
-# Install Powerlevel10k theme
-git clone https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
+# Verify plugin files exist
+ls -la ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/*.plugin.zsh
+ls -la ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/*.plugin.zsh
+
+# Install Powerlevel10k theme if needed
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
 
 # Then source your zshrc
 source ~/.zshrc

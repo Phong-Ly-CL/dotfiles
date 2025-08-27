@@ -142,6 +142,19 @@ zsh -n ~/.zshrc
 source ~/.zshrc
 ```
 
+### ZSH plugins not found
+```bash
+# Install plugins manually if needed
+git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+
+# Install Powerlevel10k theme
+git clone https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
+
+# Then source your zshrc
+source ~/.zshrc
+```
+
 ### Tmux configuration issues
 ```bash
 # Test tmux config

@@ -22,9 +22,21 @@ if [[ -f "/mnt/c/Program Files/Docker/Docker/resources/bin/docker.exe" ]]; then
     alias docker-compose='docker-compose.exe'
 fi
 
-# VS Code integration
-if command -v code.cmd > /dev/null; then
-    alias code='code.cmd'
+# VS Code integration - use WSL VS Code Server if available
+vscode_server_path=$(find "$HOME/.vscode-server/bin" -name "remote-cli" -type d 2>/dev/null | head -1)
+if [[ -n "$vscode_server_path" ]]; then
+    # Add VS Code Server to PATH
+    export PATH="$vscode_server_path:$PATH"
+    unalias code 2>/dev/null || true
+elif [[ -f "/usr/bin/code" ]]; then
+    # Native Linux VS Code exists
+    unalias code 2>/dev/null || true
+else
+    # Fallback to Windows VS Code
+    unalias code 2>/dev/null || true
+    code() {
+        "/mnt/c/Users/ly.phong/AppData/Local/Programs/Microsoft VS Code/Code.exe" "$@"
+    }
 fi
 
 # Windows path integration

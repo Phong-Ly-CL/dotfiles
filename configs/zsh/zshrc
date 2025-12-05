@@ -275,6 +275,10 @@ fi
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Use nvm default version
+nvm use default > /dev/null 2>&1
+
 export PATH="/home/linuxbrew/.linuxbrew/opt/openjdk@17/bin:$PATH"
 
 

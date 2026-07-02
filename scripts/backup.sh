@@ -23,6 +23,8 @@ FILES=(
     ".config/nvim/init.vim"
     ".claude/settings.json"
     ".claude/statusline.sh"
+    ".claude/CLAUDE.md"
+    ".claude/keybindings.json"
 )
 
 log "Backing up dotfiles to $BACKUP_DIR..."

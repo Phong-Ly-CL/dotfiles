@@ -16,6 +16,9 @@ cd ~/.dotfiles
 make install
 ```
 
+Setting up a brand-new machine? Follow [MIGRATION.md](MIGRATION.md) for the
+full checklist (dev toolchain, credentials, WSL specifics).
+
 ## 📁 Directory Structure
 
 ```

@@ -29,6 +29,8 @@ remove_symlinks() {
     local configs=(
         ".zshrc" ".gitconfig" ".p10k.zsh" ".vimrc" ".tmux.conf"
         ".config/nvim/init.vim" ".claude/settings.json" ".claude/statusline.sh"
+        ".claude/CLAUDE.md" ".claude/keybindings.json"
+        ".claude/agents" ".claude/commands"
     )
 
     log "Removing dotfiles symlinks..."

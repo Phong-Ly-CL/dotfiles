@@ -43,6 +43,7 @@ backup_existing() {
     local files=(
         ".zshrc" ".gitconfig" ".p10k.zsh" ".vimrc" ".tmux.conf"
         ".config/nvim/init.vim" ".claude/settings.json" ".claude/statusline.sh"
+        ".claude/CLAUDE.md" ".claude/keybindings.json"
     )
     local backed_up=false
 
@@ -110,18 +111,26 @@ setup_directories() {
     mkdir -p "$HOME/.ssh"
     mkdir -p "$HOME/.claude"
 
-    # Claude Code statusline symlink
-    if [ -f "$DOTFILES_DIR/configs/claude/statusline.sh" ]; then
-        ln -sf "$DOTFILES_DIR/configs/claude/statusline.sh" "$HOME/.claude/statusline.sh"
-        info "Linked Claude Code statusline"
-    fi
+    # Claude Code symlinks (dotfiles is the source of truth; note Claude Code
+    # also writes to settings.json, e.g. /model — commit those diffs).
+    # Only files present in the repo are linked, so adding e.g.
+    # configs/claude/CLAUDE.md later picks it up on the next install.
+    local claude_files=("statusline.sh" "settings.json" "CLAUDE.md" "keybindings.json")
+    for file in "${claude_files[@]}"; do
+        if [ -f "$DOTFILES_DIR/configs/claude/$file" ]; then
+            ln -sf "$DOTFILES_DIR/configs/claude/$file" "$HOME/.claude/$file"
+            info "Linked Claude Code $file"
+        fi
+    done
 
-    # Claude Code settings symlink (dotfiles is the source of truth;
-    # note Claude Code also writes to this file, e.g. /model — commit those diffs)
-    if [ -f "$DOTFILES_DIR/configs/claude/settings.json" ]; then
-        ln -sf "$DOTFILES_DIR/configs/claude/settings.json" "$HOME/.claude/settings.json"
-        info "Linked Claude Code settings.json"
-    fi
+    # Claude Code custom agents/commands directories
+    local claude_dirs=("agents" "commands")
+    for dir in "${claude_dirs[@]}"; do
+        if [ -d "$DOTFILES_DIR/configs/claude/$dir" ] && [ ! -e "$HOME/.claude/$dir" ]; then
+            ln -s "$DOTFILES_DIR/configs/claude/$dir" "$HOME/.claude/$dir"
+            info "Linked Claude Code $dir/"
+        fi
+    done
 
     # Neovim config symlink
     if [ -f "$DOTFILES_DIR/configs/vim/init.vim" ]; then

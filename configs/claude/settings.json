@@ -1,0 +1,10 @@
+{
+  "model": "fable",
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  },
+  "tui": "fullscreen",
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true
+}

@@ -110,7 +110,21 @@ setup_directories() {
     # Create necessary directories
     mkdir -p "$HOME/.config/nvim"
     mkdir -p "$HOME/.ssh"
-    
+    mkdir -p "$HOME/.claude"
+
+    # Claude Code statusline symlink
+    if [ -f "$DOTFILES_DIR/configs/claude/statusline.sh" ]; then
+        ln -sf "$DOTFILES_DIR/configs/claude/statusline.sh" "$HOME/.claude/statusline.sh"
+        info "Linked Claude Code statusline"
+    fi
+
+    # Claude Code settings symlink (dotfiles is the source of truth;
+    # note Claude Code also writes to this file, e.g. /model — commit those diffs)
+    if [ -f "$DOTFILES_DIR/configs/claude/settings.json" ]; then
+        ln -sf "$DOTFILES_DIR/configs/claude/settings.json" "$HOME/.claude/settings.json"
+        info "Linked Claude Code settings.json"
+    fi
+
     # Neovim config symlink
     if [ -f "$DOTFILES_DIR/configs/vim/init.vim" ]; then
         ln -sf "$DOTFILES_DIR/configs/vim/init.vim" "$HOME/.config/nvim/init.vim"

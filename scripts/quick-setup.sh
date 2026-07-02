@@ -1,11 +1,10 @@
 #!/bin/bash
 
-# One-liner setup script for new Codespaces
-# Usage: curl -s https://raw.githubusercontent.com/Phong-Ly-CL/dotfiles/master/quick-setup.sh | bash
+# One-liner setup script for new machines and Codespaces
+# Usage: curl -fsSL https://raw.githubusercontent.com/Phong-Ly-CL/dotfiles/master/scripts/quick-setup.sh | bash
 
-echo "🚀 Setting up your Codespace with dotfiles..."
+echo "🚀 Setting up your environment with dotfiles..."
 
-# Download and run the main setup script
-curl -s https://raw.githubusercontent.com/Phong-Ly-CL/dotfiles/master/setup-dotfiles.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Phong-Ly-CL/dotfiles/master/scripts/setup-dotfiles.sh | bash
 
 echo "✨ Setup complete! Run 'zsh' to start using your configured shell."

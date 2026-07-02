@@ -4,7 +4,6 @@
 # Uses symlinks instead of copying for easier updates
 # Author: Phong Ly
 
-# Temporarily disable strict mode for debugging
 set -eo pipefail  # Exit on error and pipe failures, but allow undefined variables
 
 # Error handler
@@ -24,7 +23,9 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Configuration
-DOTFILES_DIR="$HOME/.dotfiles"
+# Resolve the dotfiles dir from this script's location so the repo
+# can be cloned anywhere, not just ~/.dotfiles
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKUP_DIR="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 
 # Logging functions
@@ -39,14 +40,13 @@ command_exists() { command -v "$1" >/dev/null 2>&1; }
 # Create backup of existing dotfiles
 backup_existing() {
     info "Checking for existing dotfiles to backup..."
-    local files=(".zshrc" ".gitconfig" ".p10k.zsh" ".vimrc" ".tmux.conf")
+    local files=(
+        ".zshrc" ".gitconfig" ".p10k.zsh" ".vimrc" ".tmux.conf"
+        ".config/nvim/init.vim" ".claude/settings.json" ".claude/statusline.sh"
+    )
     local backed_up=false
-    
-    # Debug: Show backup directory
-    info "Backup directory would be: $BACKUP_DIR"
-    
+
     for file in "${files[@]}"; do
-        info "Checking $HOME/$file..."
         if [ -f "$HOME/$file" ] && [ ! -L "$HOME/$file" ]; then
             if [ "$backed_up" = false ]; then
                 info "Creating backup directory: $BACKUP_DIR"
@@ -55,13 +55,11 @@ backup_existing() {
                 fi
                 backed_up=true
             fi
-            info "Backing up $file..."
-            if ! cp "$HOME/$file" "$BACKUP_DIR/"; then
+            mkdir -p "$BACKUP_DIR/$(dirname "$file")"
+            if ! cp "$HOME/$file" "$BACKUP_DIR/$file"; then
                 error "Failed to backup $file to $BACKUP_DIR"
             fi
-            info "✓ Successfully backed up $file"
-        else
-            info "Skipping $file (not found or already symlinked)"
+            info "✓ Backed up $file"
         fi
     done
     
@@ -199,6 +197,32 @@ install_packages() {
     done
 }
 
+# Clone an oh-my-zsh custom plugin and make sure its .plugin.zsh entrypoint exists
+install_zsh_plugin() {
+    local plugin_name="$1"
+    local plugin_repo="$2"
+    local plugin_dir="$HOME/.oh-my-zsh/custom/plugins/$plugin_name"
+
+    if [ ! -d "$plugin_dir" ]; then
+        info "Installing $plugin_name..."
+        if git clone "$plugin_repo" "$plugin_dir"; then
+            info "✓ Successfully installed $plugin_name"
+        else
+            warn "✗ Failed to install $plugin_name"
+            return
+        fi
+    else
+        info "✓ $plugin_name already installed"
+    fi
+
+    # Some checkouts ship only <name>.zsh; oh-my-zsh needs <name>.plugin.zsh
+    if [ ! -f "$plugin_dir/${plugin_name}.plugin.zsh" ] && [ -f "$plugin_dir/${plugin_name}.zsh" ]; then
+        info "  Creating plugin wrapper file..."
+        echo "source \"\${0:A:h}/${plugin_name}.zsh\"" > "$plugin_dir/${plugin_name}.plugin.zsh"
+        info "  ✓ Created ${plugin_name}.plugin.zsh"
+    fi
+}
+
 # Setup ZSH plugins
 setup_zsh() {
     log "Setting up ZSH plugins..."
@@ -225,98 +249,9 @@ setup_zsh() {
     mkdir -p "$HOME/.oh-my-zsh/custom/themes"
     
     # Install plugins with error handling
-    # Install zsh-autosuggestions
-    local plugin_name="zsh-autosuggestions"
-    local plugin_repo="https://github.com/zsh-users/zsh-autosuggestions.git"
-    local plugin_dir="$HOME/.oh-my-zsh/custom/plugins/$plugin_name"
-    
-    if [ ! -d "$plugin_dir" ]; then
-        info "Installing $plugin_name..."
-        if git clone "$plugin_repo" "$plugin_dir"; then
-            info "✓ Successfully installed $plugin_name"
-        else
-            warn "✗ Failed to install $plugin_name"
-        fi
-    else
-        info "✓ $plugin_name already installed"
-        # Verify plugin files exist (different plugins use different naming)
-        local plugin_file_found=false
-        
-        # Check for common plugin file patterns
-        if [ -f "$plugin_dir/${plugin_name}.plugin.zsh" ]; then
-            info "  Plugin file verified: ${plugin_name}.plugin.zsh"
-            plugin_file_found=true
-        elif [ -f "$plugin_dir/${plugin_name}.zsh" ]; then
-            info "  Plugin file verified: ${plugin_name}.zsh"
-            plugin_file_found=true
-        elif [ -f "$plugin_dir/$(basename $plugin_name).plugin.zsh" ]; then
-            info "  Plugin file verified: $(basename $plugin_name).plugin.zsh"
-            plugin_file_found=true
-        fi
-        
-        if [ "$plugin_file_found" = false ]; then
-            warn "  No standard plugin files found"
-            info "  Directory contents:"
-            ls -la "$plugin_dir" | head -5
-            
-            # For zsh-autosuggestions, create plugin files if main files exist
-            if [ "$plugin_name" = "zsh-autosuggestions" ] && [ -f "$plugin_dir/zsh-autosuggestions.zsh" ]; then
-                info "  Found main file: zsh-autosuggestions.zsh"
-                if [ ! -f "$plugin_dir/zsh-autosuggestions.plugin.zsh" ]; then
-                    info "  Creating plugin wrapper file..."
-                    echo "source \"\${0:A:h}/zsh-autosuggestions.zsh\"" > "$plugin_dir/zsh-autosuggestions.plugin.zsh"
-                    info "  ✓ Created zsh-autosuggestions.plugin.zsh"
-                fi
-            fi
-        fi
-    fi
-    
-    # Install zsh-syntax-highlighting
-    plugin_name="zsh-syntax-highlighting"
-    plugin_repo="https://github.com/zsh-users/zsh-syntax-highlighting.git"
-    plugin_dir="$HOME/.oh-my-zsh/custom/plugins/$plugin_name"
-    
-    if [ ! -d "$plugin_dir" ]; then
-        info "Installing $plugin_name..."
-        if git clone "$plugin_repo" "$plugin_dir"; then
-            info "✓ Successfully installed $plugin_name"
-        else
-            warn "✗ Failed to install $plugin_name"
-        fi
-    else
-        info "✓ $plugin_name already installed"
-        # Verify plugin files exist (different plugins use different naming)
-        local plugin_file_found=false
-        
-        # Check for common plugin file patterns
-        if [ -f "$plugin_dir/${plugin_name}.plugin.zsh" ]; then
-            info "  Plugin file verified: ${plugin_name}.plugin.zsh"
-            plugin_file_found=true
-        elif [ -f "$plugin_dir/${plugin_name}.zsh" ]; then
-            info "  Plugin file verified: ${plugin_name}.zsh"
-            plugin_file_found=true
-        elif [ -f "$plugin_dir/$(basename $plugin_name).plugin.zsh" ]; then
-            info "  Plugin file verified: $(basename $plugin_name).plugin.zsh"
-            plugin_file_found=true
-        fi
-        
-        if [ "$plugin_file_found" = false ]; then
-            warn "  No standard plugin files found"
-            info "  Directory contents:"
-            ls -la "$plugin_dir" | head -5
-            
-            # For zsh-syntax-highlighting, create plugin files if main files exist
-            if [ "$plugin_name" = "zsh-syntax-highlighting" ] && [ -f "$plugin_dir/zsh-syntax-highlighting.zsh" ]; then
-                info "  Found main file: zsh-syntax-highlighting.zsh"
-                if [ ! -f "$plugin_dir/zsh-syntax-highlighting.plugin.zsh" ]; then
-                    info "  Creating plugin wrapper file..."
-                    echo "source \"\${0:A:h}/zsh-syntax-highlighting.zsh\"" > "$plugin_dir/zsh-syntax-highlighting.plugin.zsh"
-                    info "  ✓ Created zsh-syntax-highlighting.plugin.zsh"
-                fi
-            fi
-        fi
-    fi
-    
+    install_zsh_plugin "zsh-autosuggestions" "https://github.com/zsh-users/zsh-autosuggestions.git"
+    install_zsh_plugin "zsh-syntax-highlighting" "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+
     # Install Powerlevel10k theme
     local p10k_dir="$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
     if [ ! -d "$p10k_dir" ]; then
@@ -378,17 +313,8 @@ verify_installation() {
 # Main installation function
 main() {
     log "Starting modern dotfiles installation..."
-    
-    # Debug: Show environment
-    info "Debug: HOME=$HOME"
-    info "Debug: DOTFILES_DIR=$DOTFILES_DIR"
-    info "Debug: BACKUP_DIR=$BACKUP_DIR"
-    
-    # Check if we're in the dotfiles directory
-    if [ ! -f "$DOTFILES_DIR/install.sh" ]; then
-        error "Please run this script from your dotfiles directory"
-    fi
-    
+    info "Dotfiles directory: $DOTFILES_DIR"
+
     log "Step 1: Creating backups..."
     backup_existing
     

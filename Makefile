@@ -34,11 +34,12 @@ clean:
 
 test:
 	@echo "Testing configurations..."
-	@zsh -n configs/zshrc && echo "✓ zshrc syntax OK"
+	@zsh -n configs/zsh/zshrc && echo "✓ zshrc syntax OK"
+	@bash -n configs/claude/statusline.sh && echo "✓ statusline syntax OK"
 	@tmux -f configs/tmux/tmux.conf list-keys > /dev/null && echo "✓ tmux config OK"
 	@vim -T dumb -n -i NONE -es -S configs/vim/vimrc +qall && echo "✓ vim config OK"
 
 update:
 	@echo "Updating dotfiles..."
-	@git pull origin main
+	@git pull origin master
 	@./install.sh

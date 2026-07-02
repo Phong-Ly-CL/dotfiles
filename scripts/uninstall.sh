@@ -26,10 +26,13 @@ find_latest_backup() {
 
 # Remove symlinks
 remove_symlinks() {
-    local configs=(".zshrc" ".gitconfig" ".p10k.zsh" ".vimrc" ".tmux.conf")
-    
+    local configs=(
+        ".zshrc" ".gitconfig" ".p10k.zsh" ".vimrc" ".tmux.conf"
+        ".config/nvim/init.vim" ".claude/settings.json" ".claude/statusline.sh"
+    )
+
     log "Removing dotfiles symlinks..."
-    
+
     for config in "${configs[@]}"; do
         local target_path="$HOME/$config"
         if [ -L "$target_path" ]; then
@@ -39,12 +42,6 @@ remove_symlinks() {
             warn "$config exists but is not a symlink - skipping"
         fi
     done
-    
-    # Remove neovim symlink
-    if [ -L "$HOME/.config/nvim/init.vim" ]; then
-        rm "$HOME/.config/nvim/init.vim"
-        info "Removed neovim config symlink"
-    fi
 }
 
 # Restore from backup
@@ -58,14 +55,14 @@ restore_backup() {
     fi
     
     log "Restoring from backup: $backup_dir"
-    
-    for file in "$backup_dir"/*; do
-        if [ -f "$file" ]; then
-            local filename
-            filename=$(basename "$file")
-            cp "$file" "$HOME/.$filename"
-            info "Restored: .$filename"
-        fi
+
+    # Backups mirror $HOME's layout (including hidden files and
+    # nested paths like .claude/settings.json), so walk the tree
+    (cd "$backup_dir" && find . -type f) | while read -r file; do
+        file="${file#./}"
+        mkdir -p "$HOME/$(dirname "$file")"
+        cp "$backup_dir/$file" "$HOME/$file"
+        info "Restored: $file"
     done
 }
 

@@ -21,6 +21,9 @@ make install
 ```
 ~/.dotfiles/
 ├── configs/
+│   ├── claude/
+│   │   ├── settings.json    # Claude Code settings
+│   │   └── statusline.sh    # Claude Code statusline (usage bars + reset countdown)
 │   ├── environments/     # Environment-specific configs
 │   ├── git/
 │   │   └── gitconfig    # Main git config
@@ -54,6 +57,7 @@ make install
 - **Tmux** configuration with vim-like navigation
 - **Git** configuration with useful aliases
 - **SSH** configuration template
+- **Claude Code** settings and statusline (model, cost, context and rate-limit usage bars with reset countdowns)
 
 ### Modern CLI Tools
 - `bat` for better `cat`
@@ -74,7 +78,7 @@ make clean       # Clean temporary files
 
 ## 🌍 Environment Detection
 
-The dotfiles automatically detect your environment and load appropriate configurations:
+Environment detection lives in `~/.zshrc.local` (created from `templates/zshrc.local.template` on install). It detects your environment and loads the matching config from `configs/environments/`:
 
 - **GitHub Codespaces**: Workspace aliases and development settings
 - **WSL**: Windows integration and path settings  

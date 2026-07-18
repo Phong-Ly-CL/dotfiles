@@ -4,10 +4,45 @@ Steps to get a new PC (or WSL instance / Codespace) to full working state.
 The dotfiles themselves are step 1; the rest is tooling and credentials
 that can't or shouldn't live in this repo.
 
+## 0. Windows bootstrap (new PC only)
+
+Everything below assumes a working WSL2 Linux shell. On a fresh Windows PC
+you have to create that first. Skip this section on a Codespace or an
+existing WSL instance.
+
+Run in **PowerShell (Administrator)**:
+
+```powershell
+wsl --install
+```
+
+This installs WSL2 and Ubuntu. Reboot, then launch Ubuntu once to set your
+Linux username and password.
+
+- [ ] `wsl --install` completed and rebooted
+- [ ] Ubuntu launched once; Linux user created
+- [ ] `wsl -l -v` shows the distro as **VERSION 2**
+
+**Optional — clone the whole old machine instead of rebuilding.** If
+reinstalling the toolchain (step 2) is too painful, snapshot the entire Linux
+filesystem from the old PC and import it on the new one:
+
+```powershell
+# On the OLD PC
+wsl --export Ubuntu D:\ubuntu-backup.tar
+
+# On the NEW PC (after copying the tar over)
+wsl --import Ubuntu C:\WSL\Ubuntu D:\ubuntu-backup.tar
+```
+
+This carries installed toolchains, credentials, and files 1:1 — but it's a
+heavy, opaque snapshot. Prefer the reproducible dotfiles path (steps 1–3)
+unless you need an exact copy.
+
 ## 1. Dotfiles
 
 ```bash
-git clone https://github.com/Phong-Ly-CL/dotfiles.git ~/.dotfiles
+git clone https://github.com/phongly3112/dotfiles.git ~/.dotfiles
 ~/.dotfiles/install.sh
 ```
 

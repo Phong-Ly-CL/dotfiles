@@ -206,6 +206,56 @@ install_packages() {
     done
 }
 
+# Install GitHub CLI (gh). Needs its own repo setup on apt/yum, so it can't
+# just go in the install_packages() array.
+install_gh() {
+    log "Installing GitHub CLI (gh)..."
+
+    if command_exists gh; then
+        info "✓ gh already installed"
+        return 0
+    fi
+
+    if command_exists apt; then
+        if ! command -v sudo >/dev/null 2>&1; then
+            warn "No sudo access, cannot install gh"
+            return 0
+        fi
+        info "Setting up GitHub's apt repository..."
+        command_exists wget || sudo apt install -y wget 2>/dev/null
+        sudo mkdir -p -m 755 /etc/apt/keyrings
+        wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+            | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg >/dev/null
+        sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+            | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+        sudo apt update 2>/dev/null
+        if sudo apt install -y gh 2>/dev/null; then
+            info "✓ Successfully installed gh"
+        else
+            warn "✗ Failed to install gh (continuing anyway)"
+        fi
+    elif command_exists dnf || command_exists yum; then
+        local mgr="dnf"; command_exists dnf || mgr="yum"
+        info "Setting up GitHub's ${mgr} repository..."
+        sudo "$mgr" install -y "${mgr}-command(config-manager)" 2>/dev/null || true
+        sudo "$mgr" config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo 2>/dev/null
+        if sudo "$mgr" install -y gh 2>/dev/null; then
+            info "✓ Successfully installed gh"
+        else
+            warn "✗ Failed to install gh (continuing anyway)"
+        fi
+    elif command_exists brew; then
+        if brew install gh 2>/dev/null; then
+            info "✓ Successfully installed gh"
+        else
+            warn "✗ Failed to install gh (continuing anyway)"
+        fi
+    else
+        warn "No supported package manager found, skipping gh installation"
+    fi
+}
+
 # Clone an oh-my-zsh custom plugin and make sure its .plugin.zsh entrypoint exists
 install_zsh_plugin() {
     local plugin_name="$1"
@@ -329,7 +379,8 @@ main() {
     
     log "Step 2: Installing packages..."
     install_packages
-    
+    install_gh
+
     log "Step 3: Setting up ZSH..."
     setup_zsh
     

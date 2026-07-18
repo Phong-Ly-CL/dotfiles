@@ -1,10 +1,11 @@
 {
-  "model": "fable",
+  "model": "opus",
   "statusLine": {
     "type": "command",
     "command": "~/.claude/statusline.sh"
   },
   "tui": "fullscreen",
+  "theme": "dark",
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true
 }

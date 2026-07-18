@@ -160,13 +160,13 @@ install_packages() {
         else
             warn "No sudo access, skipping package update"
         fi
-        local packages=("bat" "lsd" "htop" "zsh" "tmux" "vim")
+        local packages=("bat" "lsd" "htop" "zsh" "tmux" "vim" "jq")
     elif command_exists yum; then
         info "Using yum package manager..."
-        local packages=("bat" "htop" "zsh" "tmux" "vim")
+        local packages=("bat" "htop" "zsh" "tmux" "vim" "jq")
     elif command_exists brew; then
         info "Using brew package manager..."
-        local packages=("bat" "lsd" "htop" "zsh" "tmux" "vim")
+        local packages=("bat" "lsd" "htop" "zsh" "tmux" "vim" "jq")
     else
         warn "No supported package manager found, skipping package installation"
         return 0

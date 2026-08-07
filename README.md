@@ -6,7 +6,7 @@ A modern, organized dotfiles repository with symlink-based installation and envi
 
 ```bash
 # Clone the repository
-git clone https://github.com/phongly3112/dotfiles.git ~/.dotfiles
+git clone https://github.com/cld-ly/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 
 # Install with symlinks
@@ -202,5 +202,5 @@ This project is open source. Feel free to use and modify as needed.
 
 **Quick Start Summary:**
 ```bash
-git clone https://github.com/phongly3112/dotfiles.git ~/.dotfiles && ~/.dotfiles/install.sh
+git clone https://github.com/cld-ly/dotfiles.git ~/.dotfiles && ~/.dotfiles/install.sh
 ```

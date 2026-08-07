@@ -3,11 +3,11 @@
 # Dotfiles Bootstrap Script
 # Clones the repo (or updates it) and runs the main installer.
 # Safe to curl-pipe on a fresh machine or Codespace:
-#   curl -fsSL https://raw.githubusercontent.com/phongly3112/dotfiles/master/scripts/setup-dotfiles.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/cld-ly/dotfiles/master/scripts/setup-dotfiles.sh | bash
 
 set -e
 
-DOTFILES_REPO="https://github.com/phongly3112/dotfiles.git"
+DOTFILES_REPO="https://github.com/cld-ly/dotfiles.git"
 DOTFILES_DIR="$HOME/.dotfiles"
 
 if [ -d "$DOTFILES_DIR/.git" ]; then

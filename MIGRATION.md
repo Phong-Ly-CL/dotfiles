@@ -42,7 +42,7 @@ unless you need an exact copy.
 ## 1. Dotfiles
 
 ```bash
-git clone https://github.com/phongly3112/dotfiles.git ~/.dotfiles
+git clone https://github.com/cld-ly/dotfiles.git ~/.dotfiles
 ~/.dotfiles/install.sh
 ```
 
